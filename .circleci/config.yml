@@ -49,7 +49,14 @@ jobs:
       - run:
           name: "Creating cluster"
           command: |
-            eksctl create cluster --name ${EKS_CLUSTER_NAME} --nodes 3 --nodes-min 1 --nodes-max 5 --region ${AWS_DEFAULT_REGION}
+            echo 'Pre-check before creating...'
+            aws eks describe-cluster --name ${EKS_CLUSTER_NAME}
+            if [ $? -ne 0 ]; then
+              echo 'Cluster not found. Creating new cluster...'
+              eksctl create cluster --name ${EKS_CLUSTER_NAME} --nodes 3 --nodes-min 1 --nodes-max 5 --region ${AWS_REGION}
+            else
+              echo 'Cluster existed. Skiping...'
+            fi
 
   k8s-deployment:
     executor: docker-ex
@@ -60,7 +67,7 @@ jobs:
       - aws-eks/update-kubeconfig-with-authenticator:
           kubectl-version: "v1.21.13"
           cluster-name: ${EKS_CLUSTER_NAME}
-          aws-region: ${AWS_REGION}
+          aws-region: ${AWS_DEFAULT_REGION}
       - kubernetes/create-or-update-resource:
           resource-file-path: k8s.yml
           show-kubectl-command: true
@@ -99,7 +106,7 @@ jobs:
       - aws-eks/update-kubeconfig-with-authenticator:
           kubectl-version: "v1.21.13"
           cluster-name: ${EKS_CLUSTER_NAME}
-          aws-region: ${AWS_REGION}
+          aws-region: ${AWS_DEFAULT_REGION}
       - run:
           name: "Curl to service to check for health"
           command: |
@@ -122,7 +129,7 @@ jobs:
       - aws-eks/update-kubeconfig-with-authenticator:
           kubectl-version: "v1.21.13"
           cluster-name: ${EKS_CLUSTER_NAME}
-          aws-region: ${AWS_REGION}
+          aws-region: ${AWS_DEFAULT_REGION}
       - kubernetes/get-rollout-status:
           show-kubectl-command: true
           resource-name: deployment/capstone-project-deployment
@@ -142,10 +149,10 @@ jobs:
       - aws-eks/update-kubeconfig-with-authenticator:
           kubectl-version: "v1.21.13"
           cluster-name: ${EKS_CLUSTER_NAME}
-          aws-region: ${AWS_REGION}
+          aws-region: ${AWS_DEFAULT_REGION}
       - aws-eks/delete-cluster:
           cluster-name: ${EKS_CLUSTER_NAME}
-          aws-region: ${AWS_REGION}
+          aws-region: ${AWS_DEFAULT_REGION}
           show-eksctl-command: true
       - slack/notify:
           event: pass
