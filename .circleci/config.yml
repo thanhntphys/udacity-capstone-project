@@ -5,7 +5,7 @@ orbs:
   aws-cli: circleci/aws-cli@3.1.4
   aws-eks: circleci/aws-eks@2.2.0
   kubernetes: circleci/kubernetes@1.3.1
-  aws-ecr: circleci/aws-ecr@8.2.1
+  aws-ecr: circleci/aws-ecr@6.7.0
 
 executors:
   docker-ex:
@@ -30,17 +30,6 @@ jobs:
       - slack/notify:
           event: fail
           template: basic_fail_1
-  
-  aws-ecr/build-and-push-image:
-    filters:
-      branches:
-        only: master
-    aws-access-key-id: ${AWS_ACCESS_KEY_ID}
-    aws-secret-access-key: ${AWS_SECRET_ACCESS_KEY}
-    region: ${AWS_DEFAULT_REGION}
-    dockerfile: Dockerfile
-    repo: udacity
-    tag: latest
 
   # build-image:
   #   executor: docker/machine
@@ -192,7 +181,16 @@ workflows:
       #     image: ${DOCKER_LOGIN}/${DOCKER_IMG}
       #     tag: "latest,${CIRCLE_SHA1}"
       #     update-description: true
-      - aws-ecr/build-and-push-image
+      - aws-ecr/build-and-push-image:
+          account-url: ${AWS_ECR_ACCOUNT_URL}
+          aws-access-key-id: ${AWS_ACCESS_KEY_ID}
+          aws-secret-access-key: ${AWS_SECRET_ACCESS_KEY}
+          create-repo: true
+          dockerfile: Dockerfile
+          path: .
+          region: ${AWS_DEFAULT_REGION}
+          repo: circleci-ecr-orb-demo
+          tag: "$CIRCLE_SHA1"
       - create-cluster
       - k8s-deployment:
           requires: [docker/publish, create-cluster]
