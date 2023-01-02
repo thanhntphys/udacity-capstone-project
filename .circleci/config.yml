@@ -192,7 +192,7 @@ workflows:
       #     image: ${DOCKER_LOGIN}/${DOCKER_IMG}
       #     tag: "latest,${CIRCLE_SHA1}"
       #     update-description: true
-      -aws-ecr/build-and-push-image
+      - aws-ecr/build-and-push-image
       - create-cluster
       - k8s-deployment:
           requires: [docker/publish, create-cluster]
