@@ -30,7 +30,7 @@ jobs:
       - slack/notify:
           event: fail
           template: basic_fail_1
-          
+
   build-push-image:
     executor: docker/machine
     steps:
@@ -178,6 +178,10 @@ workflows:
   default:
     jobs:
       - say-hello
+      - docker/hadolint:
+          dockerfiles: Dockerfile
+          hadolint-tag: 2.2.0-debian
+          attach-workspace: true
       - build-push-image
       - create-cluster
       - k8s-deployment:
