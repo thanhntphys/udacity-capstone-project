@@ -38,20 +38,6 @@ jobs:
   #     - docker/check
   #     - docker/build:
   #         image: ${DOCKER_LOGIN}/${DOCKER_IMG}
-  # build-push-image:
-  #   executor: docker-ex
-  #   steps:
-  #     - checkout
-  #     - aws-ecr/build-and-push-image:
-  #         account-url: ${AWS_ECR_ACCOUNT_URL}
-  #         aws-access-key-id: ${AWS_ACCESS_KEY_ID}
-  #         aws-secret-access-key: ${AWS_SECRET_ACCESS_KEY}
-  #         create-repo: true
-  #         dockerfile: Dockerfile
-  #         path: .
-  #         region: ${AWS_DEFAULT_REGION}
-  #         repo: circleci-ecr-orb-demo
-  #         tag: "$CIRCLE_SHA1"
 
   create-cluster:
     executor: docker-ex
@@ -197,10 +183,10 @@ workflows:
   default:
     jobs:
       - say-hello
-      - docker/hadolint:
-          dockerfiles: Dockerfile
-          hadolint-tag: 2.2.0-debian
-          attach-workspace: true
+      # - docker/hadolint:
+      #     dockerfiles: Dockerfile
+      #     hadolint-tag: 2.2.0-debian
+      #     attach-workspace: true
       # - build-image:
       #     requires: [docker/hadolint]
       # - docker/publish:
@@ -208,7 +194,6 @@ workflows:
       #     image: ${DOCKER_LOGIN}/${DOCKER_IMG}
       #     tag: "latest,${CIRCLE_SHA1}"
       #     update-description: true
-      - build-push-image
       - create-cluster
       - k8s-deployment:
           requires: [docker/publish, create-cluster]
