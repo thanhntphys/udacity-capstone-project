@@ -1,4 +1,3 @@
-Udacity
 FROM nginx:mainline
 
 RUN rm /etc/nginx/conf.d/*

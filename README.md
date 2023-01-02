@@ -22,7 +22,16 @@ The pipeline:
 
 2. Deploy our app
 
-- Setup the EKS cluster: I've used `ekscli` to setup the cluster automatically through the pipeline 
+- Setup the EKS cluster: I've used `ekscli` to setup the cluster automatically through the pipeline
+- Linting the Dockerfile
+
+I've done for both failed and succeed cases, as shown in the screenshots below
+
+Lint failed:
+![Lint failed](screenshots/pictureuda10.png)
+
+Lint succeed:
+![Lint succeed](screenshots/pictureuda6.png)
 
 - Build and push the image to ERC
 
@@ -32,6 +41,12 @@ I've created `k8s.yml` file, which contains all the resources needed for the pro
 
 Deployment result:
 ![Deployment result](screenshots/pictureuda2.png)
+
+![Deployment result](screenshots/pictureuda7.png)
+
+![Deployment result](screenshots/pictureuda8.png)
+
+![Deployment result](screenshots/pictureuda9.png)
 
 EC2 nodes:
 ![EC2 nodes](screenshots/pictureuda3.png)
