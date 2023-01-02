@@ -182,7 +182,8 @@ workflows:
           dockerfiles: Dockerfile
           hadolint-tag: 2.2.0-debian
           attach-workspace: true
-      - build-push-image
+      - build-push-image:
+          requires: [docker/hadolint]
       - create-cluster
       - k8s-deployment:
           requires: [build-push-image, create-cluster]
