@@ -1,6 +1,6 @@
 # Udacity Cloud DevOps Engineer: Project 05 - Capstone
 
-This is final project of Udacity Cloud DevOps Engineer Nanodegree Program. In this project we'll apply the skills and knowledge that I've learn from the nanodegree, including:
+In this project we'll apply the skills and knowledge that I've learn from the nanodegree, including:
 
 - Working with AWS
 - Using CircleCI to implement CI/CD
@@ -28,9 +28,7 @@ The pipeline:
 
 - Create and deploy k8s resources
 
-I've created `k8s.yml` file, which contains all the resources needed for the project. The LoadBalancer get deployed as service with an external IP, running on port 80.
-
-I've also create an DNS record to point to the LoadBalancer DNS so that we can connect through that domain, thus will lead us to the app.
+I've created `k8s.yml` file, which contains all the resources needed for the project.
 
 Deployment result:
 ![Deployment result](screenshots/pictureuda2.png)
@@ -43,7 +41,7 @@ ECR image:
 
 3. Check to see if the app is up and live
 
-I've access the app through both the LoadBalancer DNS and my custom DNS and confirm that both working as expected.
+I've access the app through both the LoadBalancer DNS.
 
 ![POC](screenshots/pictureuda5.png)
 
