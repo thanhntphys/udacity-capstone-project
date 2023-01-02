@@ -38,6 +38,21 @@ jobs:
   #     - docker/check
   #     - docker/build:
   #         image: ${DOCKER_LOGIN}/${DOCKER_IMG}
+  build-push-image:
+    executor: docker/machine
+      steps:
+        - checkout
+        - docker/check
+        - aws-ecr/build-and-push-image:
+            account-url: ${AWS_ECR_ACCOUNT_URL}
+            aws-access-key-id: ${AWS_ACCESS_KEY_ID}
+            aws-secret-access-key: ${AWS_SECRET_ACCESS_KEY}
+            create-repo: true
+            dockerfile: Dockerfile
+            path: .
+            region: ${AWS_DEFAULT_REGION}
+            repo: circleci-ecr-orb-demo
+            tag: "$CIRCLE_SHA1"
 
   create-cluster:
     executor: docker-ex
@@ -58,7 +73,7 @@ jobs:
             else
               echo 'Cluster existed. Skiping...'
             fi
-
+           
   k8s-deployment:
     executor: docker-ex
     steps:
@@ -181,16 +196,7 @@ workflows:
       #     image: ${DOCKER_LOGIN}/${DOCKER_IMG}
       #     tag: "latest,${CIRCLE_SHA1}"
       #     update-description: true
-      - aws-ecr/build-and-push-image:
-          account-url: ${AWS_ECR_ACCOUNT_URL}
-          aws-access-key-id: ${AWS_ACCESS_KEY_ID}
-          aws-secret-access-key: ${AWS_SECRET_ACCESS_KEY}
-          create-repo: true
-          dockerfile: Dockerfile
-          path: .
-          region: ${AWS_DEFAULT_REGION}
-          repo: circleci-ecr-orb-demo
-          tag: "$CIRCLE_SHA1"
+      - build-push-image
       - create-cluster
       - k8s-deployment:
           requires: [docker/publish, create-cluster]
